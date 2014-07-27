@@ -1,0 +1,165 @@
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Gobang</title>
+  <script src="jquery-1.7.2.min.js"></script>
+  <script src="handlebars-1.0.0.beta.6.js"></script>
+  <script src="ember-1.0.pre.js"></script>
+<script>
+window.App = Em.Application.create();
+App.BaseView = Em.View.create({
+  ui_theme:'bootstrap',
+  grid:{},
+  position:'absolute',
+  didInsertElement:function(){
+      this._super();
+      var el =this.$();
+      el.css({
+        top:this.grid.top,
+        left:this.grid.left,
+        bottom:this.grid.bottom,
+        right:this.grid.right,
+        width:this.grid.width,
+        height:this.grid.height,
+        minWidth:this.grid.minWidth,
+        maxWidth:this.grid.maxWidth,
+        minHeight:this.grid.minHeight,
+        maxHeight:this.grid.maxHeight,
+        textAlign:this.textAlign,
+        position:this.position,
+        backgroundColor:this.backgroundColor
+      });
+      /*************************测试CSS*********************/
+      //el.css({border:'4px solid'});
+      if (this.grid.centerX != undefined) {
+                var width = el.width();
+                if (this.grid.centerX == 0) {
+                    el.css({left:'50%',marginLeft:-width / 2});
+                } else {
+                    el.css({left:this.grid.centerX.toString() + '%',marginLeft:-width / 2});
+                }
+            }
+            if (this.grid.centerY != undefined) {
+                var height = el.height();
+                if (this.grid.centerY == 0) {
+                    el.css({top:'50%',marginTop:-height / 2});
+                } else {
+                    el.css({top:this.grid.centerY.toString() + '%',marginTop:-height / 2});
+            }
+      }
+  }, //end of parent
+});//end of BaseView
+
+/**********************************分隔线**************************************************/
+App.GobangTitle = Em.View.create(App.BaseView,{
+  grid:{centerX:0,top:10},
+  tagName:"h1",
+  value:"五子棋",
+  template:Ember.Handlebars.compile('{{view.value}}')
+}).appendTo("body");
+
+App.GobangView = Em.ContainerView.extend(App.BaseView,{
+  grid:{centerX:0,top:70},
+  backgroundColor:"#DDD7D7",
+  didInsertElement:function(){
+   
+    var _height = parseInt(this.get("row"))*50+50;
+    var _width =  parseInt(this.get("colum"))*50;
+    this.$().css({height:_height,width:_width});
+    this.$().hide().slideDown(1000);
+      this._super();
+  },
+  init:function(){
+    console.log(this.get("row"));
+    this._super();
+    for(var i=0;i<parseInt(this.get("row"));i++){
+      var page_y = i*50;
+      for(var j=0;j<parseInt(this.get("colum"));j++){
+        var page_x = j*50;
+        this.get("childViews").pushObject(
+          Em.ContainerView.create(App.BaseView,{
+             grid:{left:page_x,top:page_y},
+             classNames:["gobang"],
+             init:function(){
+                this._super();
+                this.set("posarry",[i,j]);  // 设置值，这样才能动态绑定
+             },
+             click:function(e){
+                e.stopPropagation();
+                var e = e||window.event;
+                if(this.get("childViews").length ===0){
+                  this.get("childViews").pushObject(
+                  Em.View.create(App.BaseView,{
+                    grid:{centerX:0,centerY:0,height:40,width:40},
+                    didInsertElement:function(){
+                      this._super();
+                      this.$().hide().fadeIn(300);
+                      this.$().addClass("chesswhite");
+                    }
+                  }).append());
+                  App.set("blackpos",this.get("posarry"));
+                }else{
+                  alert("The chess already exists,Please Click elsewhere!");
+                }
+             },
+             didInsertElement:function(){
+                this.$().text("["+this.get("posarry")+"]");
+                this._super();
+             }
+          }))
+      }
+    }
+    this.get("childViews").pushObjects(
+      [Ember.TextField.create(App.BaseView,{
+        type:"button",
+        grid:{width:80,height:30,centerX:0,bottom:10},
+        value:"Reset",
+        classNames:["xxx"],
+        click:function(){
+          delete(App.chess.destroy());
+          var _row = App.get("chess").row;
+          var _colum = App.get("chess").colum;
+
+          App.chess = App.GobangView.create({
+            row:_row,
+            colum:_colum
+          });
+          App.chess.append();
+        }
+      })]);
+   App.Chesschild =  this.get("childViews")
+  }
+});
+
+App.addObserver("blackpos",function(){
+    // console.log(App.blackpos)
+    // console.log(App.get("chess").row);
+    // console.log(App.blackpos[0]*(App.get("chess").row)+App.blackpos[1]+1);
+    // console.log(App.get("Chesschild")[App.blackpos[0]*(App.get("chess").row)+App.blackpos[1]+1].get("childViews"));
+    App.get("Chesschild")[App.blackpos[0]*(App.get("chess").row)+App.blackpos[1]+1].get("childViews").pushObject(Em.View.create(App.BaseView,{
+      grid:{centerX:0,centerY:0,height:40,width:40},
+      didInsertElement:function(){
+        this._super();
+        this.$().hide().fadeIn(300);
+        this.$().addClass("chessblack");
+    }}).append())
+}) // 
+
+
+
+
+</script>
+</head>
+<body>
+<script type="text/javascript">
+  App.chess = App.GobangView.create({
+    row: 15,// set cells of row
+    colum:15// set cells of colum
+  })
+  App.chess.append();
+</script>
+</body>
+</html>

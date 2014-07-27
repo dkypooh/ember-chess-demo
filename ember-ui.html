@@ -1,0 +1,99 @@
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <title></title>
+  <script src="jquery-1.7.2.min.js"></script>
+  <script src="handlebars-1.0.0.beta.6.js"></script>
+  <script src="ember-1.0.pre.js"></script>
+  <script type="text/javascript" src="ember-ui.js"></script>
+    <script>
+
+/*************************************************************app start*****************************************************************************/
+   list_view = CPUI.ListView.create({
+        ui_theme:'bootstrap',
+        position:'absolute',
+        grid:{width:500,left:200,top:200},
+        classNames:'well sidebar-nav',
+        li_content:[Em.Object.create({name:'tom',class:'icon-remove-sign',icon_type:'icon-hdd',edit:function(){alert('1');}})
+                  ,Em.Object.create({name:'tony',icon_type:'icon-edit',class:'active',edit:function(){alert('2')}})
+                  ,Em.Object.create({name:'Lili',icon_type:'icon-pencil',class:'',edit:function(){alert('3');}})
+                  ,Em.Object.create({name:'tony',icon_type:'icon-check',class:'',edit:function(){alert('4');}})
+                  ,Em.Object.create({name:'tony',icon_type:'icon-picture',class:'',edit:function(){alert('5');}})
+                 ],
+        li_title:'Sidebar',
+        row_height:'30',
+        row_width:'400',
+        font_size:'20',
+        li_font_size:'15'
+    });
+  list_view.appendTo('body');
+
+
+  drop_view = CPUI.DropView.create({
+      ui_theme:'bootstrap',
+      grid:{width:400,left:100,top:100},
+      position:'absolute',
+
+      btn_value:'no-message',
+      icon_type:'icon-resize-vertical',
+      ul_width:'200',
+      btn_width:'200',
+      li_content:[Em.Object.create({name:'no-message',class:''})
+                  ,Em.Object.create({name:'Something else here',class:''})
+                  ,Em.Object.create({name:'Another action',class:''})
+                  ,Em.Object.create({name:'Separated',class:''})
+                  ,Em.Object.create({name:'Sidebar'})
+                 ],
+    });
+  drop_view.appendTo('body');
+
+  button_view = CPUI.ButtonView.create({
+      grid:{height:40,width:400,left:100,top:50},
+      btn_nameBinding:'用户',
+      btn_bgc:'btn btn-success',
+      btn_icon: 'icon-fullscreen',
+      icon_white:'icon-white',
+      btn_font_size:'30',
+      btn_font_type:'text-warning',
+     // icon_margin:'-7px 0px 0px 0px'  //上右下左
+   });
+  button_view.appendTo('body');
+
+  label =  CPUI.LabelView.create({
+      value:'Data.name',
+      position:'absolute',
+      classNames:'text-warning',
+      font_size:'40',
+      tagName:'p',
+      grid:{width:400,height:60,right:0,},
+      text_align:'center',
+      
+    });
+  label.appendTo('body');
+
+ text_area = CPUI.TextAreaView.create({
+      grid:{height:400,width:600,left:100,top:400,centerX:''},
+      value:'',
+      placeholder:'sdfasf',
+
+    });
+  text_area.appendTo('body');
+
+text_field =CPUI.TextFieldView.create({
+      grid:{height:60,width:400,left:100,top:200,centerX:''},
+      font_size:'40',
+      lineHeight:'60',
+      text_align:'center',
+      value:'Data.name',
+      type:'text',
+      background_color:'#EEE',
+    });
+ text_field.appendTo('body');
+  </script>
+</head>
+<body>
+  
+</body>
+</html>
